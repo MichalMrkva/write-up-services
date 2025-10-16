@@ -1,3 +1,3 @@
 (() => {
-  console.log("helloworld")
+  console.log("API Gateway started");
 })();
