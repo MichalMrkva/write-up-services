@@ -1,22 +1,19 @@
 import express from "express";
-import proxy from "express-http-proxy";
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use((req, res, next) => {
   console.info(`[${new Date().toISOString()}]:[${req.method}]:[${req.path}]`);
   next();
 });
 
-app.use(
-  "/api/v1/books",
-  proxy("books-service:3001", {
-    proxyReqPathResolver: function (req) {
-      return req.originalUrl;
-    },
-  })
-);
+app.get("/api/v1/books", (req, res) => {
+  res.send([
+    { name: "Karel Krelštejn", tag: "nuda" },
+    { name: "Petr Petrštejn", tag: "zabava" },
+  ]);
+});
 
 app.listen(port, () => {
   console.log("app running");
