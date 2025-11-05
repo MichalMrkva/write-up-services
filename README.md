@@ -1,4 +1,4 @@
-# WriteUp Monorepo
+# Repository for Write-Up microservices
 
 start all microservices at once with [Docker](https://www.docker.com/products/docker-desktop/)
 
