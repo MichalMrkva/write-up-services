@@ -2,7 +2,7 @@ import { initDB } from "./db/db-client.js";
 import { runServer } from "./server.js";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const env = {
   app: {
