@@ -2,7 +2,6 @@ FROM node:lts-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm i
-RUN npm ci
 COPY . .
 
 FROM node:lts-alpine
