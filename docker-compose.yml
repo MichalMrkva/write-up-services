@@ -2,33 +2,26 @@ services:
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
-    ports:
-      - "3000:3000"
     depends_on:
       - books-service
   books-service:
     build: ./books-service
     container_name: books-service
     ports:
-      - "3001:3001"
+      - 3001:3001
     depends_on:
-      - write-up-database
-  write-up-database:
+      - write-up-database-server
+  write-up-database-server:
     image: postgres:16-alpine
-    container_name: write-up-database
+    container_name: write-up-database-server
     environment:
-      POSTGRES_USER: dev #!!!???!!!
-      POSTGRES_PASSWORD: dev #!!!???!!!
+      POSTGRES_DB: write_up_database
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dev"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
 volumes:
   db_data:

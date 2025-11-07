@@ -8,10 +8,14 @@
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "imports": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "ajv": "^8.17.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   }
 }
