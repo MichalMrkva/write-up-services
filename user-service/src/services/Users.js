@@ -44,8 +44,6 @@ class UsersService {
     const userDoc = {
       email: dtoIn.email,
       passwordHash: hashedPassword,
-      name: dtoIn.name,
-      createdAt: new Date(),
     };
 
     const result = await this.#repo.register(userDoc);
@@ -56,9 +54,6 @@ class UsersService {
     const validate = ajv.getSchema("login");
     const isValid = validate(dtoIn);
     if (!isValid) throw new ValidationError(validate.errors);
-
-    const user = await this.#repo.findByEmail(dtoIn.email);
-    if (!user) throw new AuthError("User not found", "UserNotFound");
 
     const isMatch = await bcrypt.compare(dtoIn.password, user.passwordHash);
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");

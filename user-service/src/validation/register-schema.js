@@ -3,9 +3,8 @@ const registerSchema = {
   properties: {
     email: { type: "string" },
     password: { type: "string" },
-    authorProfile: { type: "boolean" }
   },
-  required: ["email", "password", "authorProfile"],
+  required: ["email", "password"],
   additionalProperties: false
 };
 module.exports = registerSchema;

@@ -1,9 +1,11 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-import{login} from"./routes/login";
-import {register} from "./routes/register";
+
+import { login } from "./users/login.js";
+import { register } from "./users/register.js";
+
 
 router.post("/api/v1/register", register);
 router.post("/api/v1/token/login", login);
 
-module.exports = router;
+export default router;
