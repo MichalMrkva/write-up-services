@@ -1,14 +1,18 @@
 import { AuthError } from "../../errors/auth.js";
 import { ValidationError } from "../../../../books-service/src/errors/validation.js";
 import { DatabaseError } from "../../errors/database.js";
-import { getAuthSingleton } from "../../repositories/auth-repository.js";
+import { getUsersServiceSingleton } from "../../services/Users.js";
 import { serverError } from "../../const/default-errors.js";
 export const login= async(req,res)=>
 {
-    const service=getAuthSingleton;
+    const service=await getUsersServiceSingleton();
     const dtoIn=req.body;
+    console.log(service.login)
     try{
-        const dtOut=await service.login(dtoIn)
+        const token=await service.login(dtoIn)
+        const dtOut={success: true,
+            message: "Login successful",
+            token: token}
         res.status(201).json(dtOut);
     }
     catch(err)

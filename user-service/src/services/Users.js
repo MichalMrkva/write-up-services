@@ -5,23 +5,26 @@ import { registerSchema } from "../validation/register-schema.js";
 import { loginSchema } from "../validation/login-schema.js";
 import { getAuthRepoSingleton } from "../repositories/auth-repository.js";
 import { AuthError } from "../errors/auth.js";
-import { ValidationError } from "../errors/validation-error.js";
+import { ValidationError } from "../errors/validation.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 let serviceSingleton;
 
-export const getUsersServiceSingleton = () => {
-  if (!serviceSingleton) serviceSingleton = new UsersService();
+export const getUsersServiceSingleton = async () => {
+  if (!serviceSingleton) {
+    const repo = await getAuthRepoSingleton(); 
+    serviceSingleton = new UsersService(repo);  
+  }
   return serviceSingleton;
 };
 
 class UsersService {
   #repo;
 
-  constructor() {
-    this.#repo = getAuthRepoSingleton();
+  constructor(repo) {
+    this.#repo = repo;  
     ajv.addSchema(registerSchema, "register");
     ajv.addSchema(loginSchema, "login");
   }
@@ -43,7 +46,7 @@ class UsersService {
 
     const userDoc = {
       email: dtoIn.email,
-      passwordHash: hashedPassword,
+      password_hash: hashedPassword,
     };
 
     const result = await this.#repo.register(userDoc);
@@ -55,11 +58,12 @@ class UsersService {
     const isValid = validate(dtoIn);
     if (!isValid) throw new ValidationError(validate.errors);
 
-    const isMatch = await bcrypt.compare(dtoIn.password, user.passwordHash);
+    const user = await this.#repo.login(dtoIn.email); 
+    const isMatch = await bcrypt.compare(dtoIn.password, user.password_hash);
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");
 
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user.id },
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
