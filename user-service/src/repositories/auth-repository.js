@@ -33,13 +33,22 @@ class AuthRepository {
   }
 
   async register(user) {
+  try {
     const res = await this.#client.query(queryRegister, [
       user.email,
       user.password_hash,
     ]);
-    if (res.rows.length > 0) return res.rows[0];
-    throw new DatabaseError("Failed to retrieve created user");
+    console.log("User zaregistrován",res.rows[0])
+    return { status: "success", message: "Register success" };
+
+  } catch (err) {
+    if (err.code === "23505") {
+      throw new DatabaseError("User already exists");
+    }
+    throw new DatabaseError("Database error: " + err.message);
   }
+}
+
 
   async login(email) {
     const res = await this.#client.query(queryLogin, [email]);

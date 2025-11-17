@@ -5,6 +5,7 @@ import { getUsersServiceSingleton } from "../../services/Users.js";
 import { serverError } from "../../const/default-errors.js";
 export const login= async(req,res)=>
 {
+    console.log("Req dorazil do controlleru login")
     const service=await getUsersServiceSingleton();
     const dtoIn=req.body;
     console.log(service.login)
@@ -17,6 +18,7 @@ export const login= async(req,res)=>
     }
     catch(err)
     {
+        console.log("Login controller error:",err)
         if( err instanceof ValidationError)
         {
             res.status(err.status).json({

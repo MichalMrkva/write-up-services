@@ -34,6 +34,7 @@ class UsersService {
     const isValid = validate(dtoIn);
     if (!isValid) throw new ValidationError(validate.errors);
 
+    console.log("Validace prošla");
     const re = /^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\sA-Za-z0-9])(?!.*\s).*$/;
     if (!re.test(dtoIn.password)) {
       throw new ValidationError([
@@ -57,6 +58,7 @@ class UsersService {
     const validate = ajv.getSchema("login");
     const isValid = validate(dtoIn);
     if (!isValid) throw new ValidationError(validate.errors);
+    console.log("Validace prošla");
 
     const user = await this.#repo.login(dtoIn.email); 
     const isMatch = await bcrypt.compare(dtoIn.password, user.password_hash);

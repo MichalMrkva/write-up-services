@@ -5,6 +5,7 @@ import { getUsersServiceSingleton } from "../../services/Users.js";
 import { serverError } from "../../const/default-errors.js";
 export const register= async(req,res)=>
 {
+    console.log("Req dorazil do controlleru register")
     const service= await getUsersServiceSingleton();    
     const dtoIn=req.body;
     console.log(service.register)
@@ -13,7 +14,8 @@ export const register= async(req,res)=>
         res.status(201).json(dtOut);
     }
     catch(err)
-    {
+    {   
+        console.log("Register controller error:",err)
         if( err instanceof ValidationError)
         {
             res.status(err.status).json({
