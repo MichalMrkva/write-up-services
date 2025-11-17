@@ -11,17 +11,6 @@ services:
       - 3001:3001
     depends_on:
       - write-up-database-server
-  write-up-database-server:
-    image: postgres:16-alpine
-    container_name: write-up-database-server
-    environment:
-      POSTGRES_DB: write_up_database
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
 volumes:
   db_data:
