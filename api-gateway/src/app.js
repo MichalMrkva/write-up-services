@@ -1,6 +1,6 @@
 import express from "express";
 import proxy from "express-http-proxy";
-import authMiddleware from "./authMiddleware";
+import authMiddleware from "./authMiddleware.js";
 
 const app = express();
 const port = 3000;
@@ -19,7 +19,6 @@ app.use(
 );
 app.use(authMiddleware);
 
-
 app.use(
   "/api/v1/books",
   proxy("books-service:3001", {
@@ -28,8 +27,6 @@ app.use(
     },
   })
 );
-
-
 
 app.listen(port, () => {
   console.log("app running");
