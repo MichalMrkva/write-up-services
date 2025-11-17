@@ -10,7 +10,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(
-  "/api/v1/users",
+  "/api/v1/user",
   proxy("user-service:3002", {
     proxyReqPathResolver: function (req) {
       return req.originalUrl;

@@ -1,5 +1,5 @@
 import { AuthError } from "../../errors/auth.js";
-import { ValidationError } from "../../../../books-service/src/errors/validation.js";
+import { ValidationError } from "../../errors/validation.js";
 import { DatabaseError } from "../../errors/database.js";
 import { getUsersServiceSingleton } from "../../services/Users.js";
 import { serverError } from "../../const/default-errors.js";
