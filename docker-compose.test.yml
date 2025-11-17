@@ -3,7 +3,7 @@ services:
     build: ./api-gateway
     container_name: api-gateway
     depends_on:
-      - books-service
+      - user-service
     ports:
       - 3000:3000
 
@@ -17,4 +17,4 @@ services:
     build: ./user-service
     container_name: user-service
     ports:
-      - 3001:3001
+      - 3002:3002
