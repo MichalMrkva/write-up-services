@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
 )
 `;
 
-const queryRegister = `INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING *`;
+const queryRegister = `INSERT INTO users (email, password_hash,username) VALUES ($1, $2, $3) RETURNING *`;
 const queryLogin = `SELECT * FROM users WHERE email = $1`;
 
 class AuthRepository {
@@ -37,6 +37,7 @@ class AuthRepository {
     const res = await this.#client.query(queryRegister, [
       user.email,
       user.password_hash,
+      user.username,
     ]);
     console.log("User zaregistrován",res.rows[0])
     return { status: "success", message: "Register success" };

@@ -3,7 +3,8 @@ export const registerSchema = {
   properties: {
     email: { type: "string" },
     password: { type: "string" },
+    username: { type: "string" },
   },
-  required: ["email", "password"],
+  required: ["email", "password","username"],
   additionalProperties: false
 };
