@@ -21,5 +21,13 @@ describe("Profile routes (running server)", () => {
 
     expect(res.status).toBe(201); 
   });
-  
+  test("POST /api/v1/profile?id=", async () => {
+
+    const res = await request(BASE_URL)
+      .get("/api/v1/profile?id=")
+      .query({id}) 
+      .set("Accept", "application/json");
+
+    expect(res.status).toBe(201); 
+  });
 });
