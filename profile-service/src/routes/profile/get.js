@@ -3,14 +3,14 @@ import { ValidationError } from "../../errors/validation.js";
 import { DatabaseError } from "../../errors/database.js";
 import { getProfileServiceSingleton } from "../../services/Profiles.js";
 import { serverError } from "../../const/default-errors.js";
-export const create= async(req,res)=>
+export const get= async(req,res)=>
 {
-    console.log("Req dorazil do controlleru create")
+    console.log("Req dorazil do controlleru get")
     const service=await getProfileServiceSingleton();
-    const dtoIn=req.body;//je potřeba pak přepsatr na user
-    console.log(service.create)
+    const dtoIn=req.query;
+    console.log(service.get)
     try{
-        const dtOut=await service.create(dtoIn)
+        const dtOut=await service.get(dtoIn)
         res.status(201).json(dtOut);
     }
     catch(err)

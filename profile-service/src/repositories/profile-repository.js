@@ -14,6 +14,7 @@ const createTableQuery = `
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
+  email VARCHAR(50),
   username VARCHAR(50),
   bio VARCHAR(255),
   img_url VARCHAR(255),
@@ -26,7 +27,8 @@ CREATE TABLE IF NOT EXISTS profiles (
 `;
 
 
-const queryCreate = `INSERT INTO profiles (user_id, username,bio,img_url,genre) VALUES ($1,$2,$3,$4,$5) RETURNING *`;
+const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING *`;
+const queryGet=`SELECT * from profiles WHERE id=$1`;
 
 
 class ProfileRepository {
@@ -42,8 +44,9 @@ class ProfileRepository {
   async create(user) {
     try {
       const res = await this.#client.query(queryCreate, [
+        user.user_id,
         user.email,
-        user.password_hash,
+        user.username,
       ]);
       console.log("User zaregistrován",res.rows[0])
       return { message: "Profile success" };
@@ -54,6 +57,24 @@ class ProfileRepository {
       }
       throw new DatabaseError("Database error: " + err.message);
     }
+  }
+  async get(user)
+  {
+    try{
+      const res=this.#client.query(queryGet,[user.id]);
+      if(res.rows[0].length>0)
+      {
+        console.log("Autoruv profil",res.rows[0]);
+        return res.rows[0];
+
+      }
+      throw new DatabaseError("Author profil doesnt exist")
+
+    }
+    catch (err) {
+      throw new DatabaseError("Database error: " + err.message);
+    }
+
   }
 
 

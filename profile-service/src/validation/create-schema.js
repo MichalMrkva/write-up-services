@@ -1,28 +1,19 @@
 export const createSchema = {
   type: "object",
-  required: ["user_id"],
+  required: ["user_id", "email", "username"],
   additionalProperties: false,
   properties: {
     user_id: {
-      type: "integer",
-      minimum: 1
+      type: "string",
+      format: "uuid"
+    },
+    email: {
+      type: "string",
+      maxLength: 50
     },
     username: {
       type: "string",
       maxLength: 50
-    },
-    bio: {
-      type: "string",
-      maxLength: 255
-    },
-    img_url: {
-      type: "string",
-      maxLength: 255,
-      format: "uri"
-    },
-    genre: {
-      type: "string",
-      maxLength: 255
     }
   }
 };

@@ -14,7 +14,8 @@ export default function authMiddleware(req, res, next) {
         
         req.user = {
             userId: decoded.userId,
-            email: decoded.email 
+            email: decoded.email ,
+            username:decoded.username
         };
 
         next(); 
