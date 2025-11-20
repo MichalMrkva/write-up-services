@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 
 const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING *`;
 const queryGet=`SELECT * from profiles WHERE id=$1`;
+const queryUpdate=`UPDATE profiles SET bio=$2,genres=$3,img_url=$4 WHERE id=$1 RETURNING *`
 
 
 class ProfileRepository {
@@ -41,14 +42,14 @@ class ProfileRepository {
     await this.#client.query(createTableQuery);
   }
 
-  async create(user) {
+  async create(dtoIn) {
     try {
       const res = await this.#client.query(queryCreate, [
-        user.user_id,
-        user.email,
-        user.username,
+        dtoIn.user_id,
+        dtoIn.email,
+        dtoIn.username,
       ]);
-      console.log("User zaregistrován",res.rows[0])
+      console.log("Profil vytvořen",res.rows[0])
       return { message: "Profile success" };
 
     } catch (err) {
@@ -58,14 +59,14 @@ class ProfileRepository {
       throw new DatabaseError("Database error: " + err.message);
     }
   }
-  async get(user)
+  async get(dtoIn)
   {
     try{
-      const res=this.#client.query(queryGet,[user.id]);
-      if(res.rows[0].length>0)
+      const res=await this.#client.query(queryGet,[dtoIn.id]);
+      if(res.rows[0])
       {
-        console.log("Autoruv profil",res.rows[0]);
-        return res.rows[0];
+        console.log("Changes:",res.rows[0]);
+        return("List of changes:",res.rows[0]);
 
       }
       throw new DatabaseError("Author profil doesnt exist")
@@ -75,6 +76,30 @@ class ProfileRepository {
       throw new DatabaseError("Database error: " + err.message);
     }
 
+  }
+  async update(dtoIn)
+  {
+    try{
+      const res=await this.#client.query(queryUpdate,[
+      dtoIn.id,
+      dtoIn.bio,
+      dtoIn.genres,
+      dtoIn.img_url
+
+      ]);
+      if(res.rows[0])
+      {
+        console.log("Autoruv profil byl updatnut",res.rows[0]);
+        return res.rows[0];
+
+      }
+      throw new DatabaseError("Author profil doesnt exist")
+
+    }
+    catch (err) {
+      throw new DatabaseError("Database error: " + err.message);
+    }
+    
   }
 
 

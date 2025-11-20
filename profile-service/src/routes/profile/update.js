@@ -3,19 +3,19 @@ import { ValidationError } from "../../errors/validation.js";
 import { DatabaseError } from "../../errors/database.js";
 import { getProfileServiceSingleton } from "../../services/Profiles.js";
 import { serverError } from "../../const/default-errors.js";
-export const get= async(req,res)=>
+export const update= async(req,res)=>
 {
-    console.log("Req dorazil do controlleru get")
+    console.log("Req dorazil do controlleru update")
     const service=await getProfileServiceSingleton();
-    const dtoIn=req.query;
-    console.log(service.get)
+    const dtoIn=req.body;//je potřeba pak přepsatr na user
+    console.log(service.update)
     try{
-        const dtOut=await service.get(dtoIn)
+        const dtOut=await service.update(dtoIn)
         res.status(201).json(dtOut);
     }
     catch(err)
     {
-        console.log("Get controller error:",err)
+        console.log("Update controller error:",err)
         if( err instanceof ValidationError)
         {
             res.status(err.status).json({
