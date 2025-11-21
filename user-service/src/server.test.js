@@ -8,7 +8,7 @@ const email="test14@example.com";
 
 describe("Auth routes (running server)", () => {
   test("POST /api/v1/user/register", async () => {
-    const dtoIn = { email: email, password: "StrongPass1!" };
+    const dtoIn = { email: email, password: "StrongPass1!",username:"pokus" };
 
     const res = await request(BASE_URL)
       .post("/api/v1/user/register")

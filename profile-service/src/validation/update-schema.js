@@ -19,8 +19,12 @@ export const updateSchema = {
       type: "string",
       maxLength: 255,
       format: "uri"
-    }
+    },
+    user_id:{
+      type: "string",
+      format: "uuid"
+    },
   },
-  required: ["id"],
+  required: ["id","user_id"],
   additionalProperties: false
 };
