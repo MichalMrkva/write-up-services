@@ -24,5 +24,14 @@ describe("Profile routes (running server)", () => {
     expect(res.status).toBe(201);
     
   });
+  test("POST /api/v1/profile/upload", async () => { 
+
+    const res = await request(BASE_URL)
+      .post("/api/v1/profile/upload")
+      .field("user_id", "9f3c1f3b-7d9a-4e8d-92a4-1c6ab4cbb123");
+
+    expect(res.status).toBe(400);
+    
+  });
 
 });

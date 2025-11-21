@@ -75,7 +75,7 @@ class ProfileService {
     const validate = ajv.getSchema("upload");
     const isValid = validate({ user_id });
     if (!isValid) throw new ValidationError(validate.errors);
-    console.log("Bylo validováno")
+    console.log("Validace prošla");
     
 
     const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
