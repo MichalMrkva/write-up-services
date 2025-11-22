@@ -61,8 +61,8 @@ class ProfileService {
     if(!isValid) throw new ValidationError(validate.errors);
     console.log("Validace prošla");
 
-    const auth=await this.#repo.get(dtoIn.id);
-    if(dtoIn.userid!==auth.user_id)
+    const auth=await this.#repo.get(dtoIn);
+    if(dtoIn.user_id!==auth.user_id)
     {
       throw new AuthError("You are not owner of this account")
     }

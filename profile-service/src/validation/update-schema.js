@@ -9,11 +9,9 @@ export const updateSchema = {
       type: "string",
       maxLength: 1000
     },
-    genres: {
-      type: "array",
-      items: {
-        type: "string"
-      }
+    genre: {
+      type: "string",
+      maxLength:255
     },
     img_url: {
       type: "string",

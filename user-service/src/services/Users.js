@@ -48,6 +48,7 @@ class UsersService {
     const userDoc = {
       email: dtoIn.email,
       password_hash: hashedPassword,
+      username:dtoIn.username
     };
 
     const result = await this.#repo.register(userDoc);

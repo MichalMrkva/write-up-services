@@ -1,21 +1,24 @@
 import request from "supertest";
 import dotenv from "dotenv";
+const id="dc908785-33b1-48d8-bfa8-633ba7160be9";
 
 dotenv.config();
 const port=process.env.PORT
 const BASE_URL = `http://localhost:${port}`;
 const updateData = {
+  id,
   bio: "Nový bio",
-  genres: ["rock", "jazz"],
-  img_url: "https://example.com/new-image.jpg"
+  genre: "rock,jazz",
+  img_url: "https://example.com/new-image.jpg",
+  user_id:"7b2de7f8-889d-4045-9978-1a7b0873ec68"
 };
 
-const id="";
+
 
 describe("Profile routes (running server)", () => {
   test("POST /api/v1/profile", async () => {
     const dtoIn = {
-      user_id: "9f3c1f3b-7d9a-4e8d-92a4-1c6ab4cbb123",
+      user_id: "7b2de7f8-889d-4045-9978-1a7b0873ec68",
       email: "test.user@example.com",
       username: "testUser123"
     };
@@ -29,20 +32,19 @@ describe("Profile routes (running server)", () => {
   test("GET /api/v1/profile?id=", async () => {
 
     const res = await request(BASE_URL)
-      .get("/api/v1/profile?id=")
+      .get("/api/v1/profile")
       .query({id}) 
       .set("Accept", "application/json");
 
-    expect(res.status).toBe(200); 
+    expect(res.status).toBe(201); 
   });
-  test("PATCH /api/v1/profile?id=",async()=>{
+  test("PATCH /api/v1/profile",async()=>{
     const res =await request(BASE_URL)
-    .patch("/api/v1/profile?id=")
-    .query({id})
+    .patch("/api/v1/profile")
     .send(updateData)
     .set("Accept", "application/json");
 
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
 
     
   });

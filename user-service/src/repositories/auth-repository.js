@@ -11,16 +11,17 @@ export async function getAuthRepoSingleton() {
 }
 
 const createTableQuery = `
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS users2 (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(255) NOT NULL UNIQUE,
+  username VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 )
 `;
 
-const queryRegister = `INSERT INTO users (email, password_hash,username) VALUES ($1, $2, $3) RETURNING *`;
-const queryLogin = `SELECT * FROM users WHERE email = $1`;
+const queryRegister = `INSERT INTO users2 (email, password_hash,username) VALUES ($1, $2, $3) RETURNING *`;//Je potřeba přepsat na users až se dropne users
+const queryLogin = `SELECT * FROM users2 WHERE email = $1`;
 
 class AuthRepository {
   #client;

@@ -7,7 +7,7 @@ export const update= async(req,res)=>
 {
     console.log("Req dorazil do controlleru update")
     const service=await getProfileServiceSingleton();
-    const dtoIn=req.body;//je potřeba pak přepsatr na user
+    const dtoIn=req.body;
     console.log(service.update)
     try{
         const dtOut=await service.update(dtoIn)
