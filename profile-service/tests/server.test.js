@@ -1,6 +1,6 @@
 import request from "supertest";
 import dotenv from "dotenv";
-const id="dc908785-33b1-48d8-bfa8-633ba7160be9";
+const id="00a5f3ac-111a-4328-ae44-0e41bb9b80e9";
 
 dotenv.config();
 const port=process.env.PORT
@@ -9,8 +9,7 @@ const updateData = {
   id,
   bio: "Nový bio",
   genre: "rock,jazz",
-  img_url: "https://example.com/new-image.jpg",
-  user_id:"7b2de7f8-889d-4045-9978-1a7b0873ec68"
+  user_id:"ed79c3f9-5ad0-4950-a3df-e06d60a9c36f"
 };
 
 
@@ -18,7 +17,7 @@ const updateData = {
 describe("Profile routes (running server)", () => {
   test("POST /api/v1/profile", async () => {
     const dtoIn = {
-      user_id: "7b2de7f8-889d-4045-9978-1a7b0873ec68",
+      user_id: "ed79c3f9-5ad0-4950-a3df-e06d60a9c36f",
       email: "test.user@example.com",
       username: "testUser123"
     };

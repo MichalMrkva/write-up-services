@@ -108,8 +108,8 @@ class ProfileService {
     if (error) throw new FileError(error.message);
     const img_url=process.env.SUPABASE_URL+"/storage/v1/object/public/avatars/"+data.path
     
-    console.log("Cesta k souboru:",uri);
-    const result=await this.#repo.upload(dtoIn.id,img_url)
+    console.log("Cesta k souboru:",img_url);
+    const result=await this.#repo.upload(dtoIn.user_id,img_url)
     return result;
   }
 

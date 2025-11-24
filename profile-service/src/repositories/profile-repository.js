@@ -21,16 +21,16 @@ CREATE TABLE IF NOT EXISTS profiles (
   genre VARCHAR(255),
   CONSTRAINT fk_user
     FOREIGN KEY (user_id)
-    REFERENCES users2(id)
+    REFERENCES users(id)
     ON DELETE CASCADE
 );
 `;
-// v REFERENCES pak přepsta na users
+
 
 const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING *`;
 const queryGet=`SELECT * from profiles WHERE id=$1`;
-const queryUpdate=`UPDATE profiles SET bio=$2,genre=$3,img_url=$4 WHERE id=$1 RETURNING *`
-const queryUpload=`UPDATE profiles SET img_url=$2 WHERE id=$1 RETURNING *`
+const queryUpdate=`UPDATE profiles SET bio=$2,genre=$3 WHERE id=$1 RETURNING *`
+const queryUpload=`UPDATE profiles SET img_url=$2 WHERE user_id=$1 RETURNING *`
 
 
 class ProfileRepository {
@@ -101,12 +101,12 @@ class ProfileRepository {
     }
     
   }
-  async upload(id,img_url)
+  async upload(user_id,img_url)
   { 
     try{
       const res=await this.#client.query(queryUpload,[
 
-        id,
+        user_id,
         img_url
       ]);
       if(res.rows[0])
