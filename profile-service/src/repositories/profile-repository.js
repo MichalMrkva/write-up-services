@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING *`;
 const queryGet=`SELECT * from profiles WHERE id=$1`;
 const queryUpdate=`UPDATE profiles SET bio=$2,genre=$3,img_url=$4 WHERE id=$1 RETURNING *`
+const queryUpload=`UPDATE profiles SET img_url=$2 WHERE id=$1 RETURNING *`
 
 
 class ProfileRepository {
@@ -84,7 +85,6 @@ class ProfileRepository {
       dtoIn.id,
       dtoIn.bio,
       dtoIn.genre,
-      dtoIn.img_url
 
       ]);
       if(res.rows[0])
@@ -100,6 +100,28 @@ class ProfileRepository {
       throw new DatabaseError("Database error: " + err.message);
     }
     
+  }
+  async upload(id,img_url)
+  { 
+    try{
+      const res=await this.#client.query(queryUpload,[
+
+        id,
+        img_url
+      ]);
+      if(res.rows[0])
+      {
+        console.log("Autoruv profil byl updatnut",res.rows[0]);
+        return res.rows[0];
+
+      }
+      throw new DatabaseError("Author profil doesnt exist")
+      
+    }
+    catch (err) {
+      throw new DatabaseError("Database error: " + err.message);
+    }
+
   }
 
 

@@ -106,9 +106,11 @@ class ProfileService {
       .upload(fileName, file.buffer, { contentType: file.mimetype, upsert: true });
 
     if (error) throw new FileError(error.message);
-    const uri=process.env.SUPABASE_URL+"/storage/v1/object/public/avatars/"+data.path
+    const img_url=process.env.SUPABASE_URL+"/storage/v1/object/public/avatars/"+data.path
+    
     console.log("Cesta k souboru:",uri);
-    return uri;
+    const result=await this.#repo.upload(dtoIn.id,img_url)
+    return result;
   }
 
 }
