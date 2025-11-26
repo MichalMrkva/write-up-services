@@ -5,7 +5,7 @@ import { ajv } from "../validation/ajv.js";
 import {
   bookCreateSchema,
   bookPatchSchema,
-} from "../validation/chapter-schema.js";
+} from "../validation/book-schema.js";
 
 let serviceSingleton;
 
@@ -36,5 +36,54 @@ class BooksService {
     }
     const dtoOut = this.#repo.createNewBook(dtoIn, userId);
     return dtoOut;
+  }
+
+  async getBooks() {
+    try {
+      const books = await this.#repo.getBooks();
+      return books;
+    } catch (e) {
+      console.log("[BookService] - error: ", e);
+      throw e;
+    }
+  }
+
+  async getBookById(bookId) {
+    try {
+      const book = await this.#repo.getBookById(bookId);
+      return book;
+    } catch (e) {
+      console.log("[BookService] - error: ", e);
+      throw e;
+    }
+  }
+
+  async deleteBookById(bookId, userId) {
+    if (!userId) {
+      throw new AuthError("Missing author id");
+    }
+    await this.#repo.deleteBookById(bookId, userId);
+  }
+
+  async updateBookById(bookId, userId, dtoIn) {
+    if (!userId) {
+      throw new AuthError("Missing author id");
+    }
+    const validate = ajv.getSchema("patch-book");
+    const isValid = await validate(dtoIn);
+    if (!isValid) {
+      throw new ValidationError(validate.errors);
+    }
+    try {
+      const updatedBook = await this.#repo.updateBookById(
+        bookId,
+        userId,
+        dtoIn
+      );
+      return updatedBook;
+    } catch (e) {
+      console.log("[BookService] - error: ", e);
+      throw e;
+    }
   }
 }

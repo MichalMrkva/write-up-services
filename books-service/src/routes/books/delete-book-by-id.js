@@ -4,13 +4,13 @@ import { DatabaseError } from "../../errors/database.js";
 import { ValidationError } from "../../errors/validation.js";
 import { getBooksServiceSingleton } from "../../services/BooksService.js";
 
-export const postBook = async (req, res) => {
+export const deleteBookById = async (req, res) => {
   try {
-    const service = getBooksServiceSingleton();
-    const dtoIn = req.body;
+    const bookId = req.params.bookId;
     const authorId = req.headers["x-author-id"];
-    const dtoOut = await service.createBook(dtoIn, authorId);
-    res.status(201).json(dtoOut);
+    const service = getBooksServiceSingleton();
+    await service.deleteBookById(bookId, authorId);
+    res.status(204).end();
   } catch (err) {
     console.log(err);
     if (err instanceof AuthError) {
