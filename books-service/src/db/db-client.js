@@ -64,7 +64,7 @@ const updateChaptersTrigger = `--sql
   EXECUTE FUNCTION update_chapters_timestamp();
 `;
 
-const indexChaptersBookId = `--sql CREATE INDEX IF NOT EXISTS idx_chapters_book_id ON chapters (book_id);`;
+const indexChaptersBookIdAndId = `--sql CREATE UNIQUE INDEX IF NOT EXISTS idx_chapters_book_id_id ON chapters (book_id, id);`;
 const indexChaptersName = `--sql CREATE INDEX IF NOT EXISTS idx_chapters_name ON chapters (name);`;
 
 export async function initDB(user, host, database, password, port) {
@@ -90,7 +90,7 @@ export async function initDB(user, host, database, password, port) {
     await pool.query(createChapterTable);
     await pool.query(updateChaptersTimestampFunction);
     await pool.query(updateChaptersTrigger);
-    await pool.query(indexChaptersBookId);
+    await pool.query(indexChaptersBookIdAndId);
     await pool.query(indexChaptersName);
 
     console.log("Database pool successfully connected.");

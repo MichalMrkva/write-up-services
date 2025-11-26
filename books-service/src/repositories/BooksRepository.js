@@ -80,7 +80,7 @@ class BookRepository {
     if (res.rows.length > 0) {
       return res.rows[0];
     } else {
-      throw new DatabaseError("Failed to retrieve ID after creating new book.");
+      throw new DatabaseError("Failed to retrieve created book");
     }
   }
 
@@ -118,10 +118,10 @@ class BookRepository {
     }
   }
 
-  async getBookById(id) {
+  async getBookById(bookId) {
     let res;
     try {
-      res = await query(querySelectBookById, [id]);
+      res = await query(querySelectBookById, [bookId]);
     } catch (e) {
       throw new DatabaseError(e.message);
     }
@@ -149,12 +149,11 @@ class BookRepository {
       }
       return book;
     } else {
-      throw new DatabaseError(`Book ${id} not found`);
+      throw new DatabaseError(`Book ${bookId} not found`);
     }
   }
 
   async updateBookById(bookId, userId, dtoIn) {
-    console.log({ bookId, userId, dtoIn });
     try {
       const result = await query(queryUpdateBookById, [bookId, userId, dtoIn]);
       if (result.rowCount === 0) {

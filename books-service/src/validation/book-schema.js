@@ -17,6 +17,7 @@ export const bookCreateSchema = {
   required: ["name"],
   additionalProperties: false,
 };
+
 export const bookPatchSchema = {
   type: "object",
   properties: {
