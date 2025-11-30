@@ -51,7 +51,7 @@ class ProfileRepository {
         dtoIn.username,
       ]);
       console.log("Profil vytvořen",res.rows[0])
-      return { message: "Profile success" };
+      return res.rows[0];
 
     } catch (err) {
       if (err.code === "23505") {

@@ -7,7 +7,7 @@ export const create= async(req,res)=>
 {
     console.log("Req dorazil do controlleru create")
     const service=await getProfileServiceSingleton();
-    const dtoIn=req.user; //pro jest test je potřeba req.body
+    const dtoIn=req.user;
     console.log(service.create)
     try{
         const dtOut=await service.create(dtoIn)
