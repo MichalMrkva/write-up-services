@@ -1,6 +1,3 @@
-import jwt, { decode } from 'jsonwebtoken';
-
-
 export default function authMiddleware(req, res, next) {
     try {
         req.user={
