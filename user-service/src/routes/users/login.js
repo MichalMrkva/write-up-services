@@ -10,10 +10,8 @@ export const login= async(req,res)=>
     const dtoIn=req.body;
     console.log(service.login)
     try{
-        const token=await service.login(dtoIn)
-        const dtOut={success: true,
-            message: "Login successful",
-            token: token}
+        const dtOut=await service.login(dtoIn)
+        
         res.status(201).json(dtOut);
     }
     catch(err)
