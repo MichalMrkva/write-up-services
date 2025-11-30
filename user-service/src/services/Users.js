@@ -73,6 +73,8 @@ class UsersService {
       { expiresIn: "30d" }
     );
 
-    return token;
+    const dtoOut={token,user_id:user._id,email:user.email,username:user.username}
+
+    return dtoOut;
   }
 }
