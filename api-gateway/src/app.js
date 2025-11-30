@@ -11,7 +11,7 @@ app.use((req, res, next) => {
 });
 app.use(
   "/api/v1/user",
-  proxy("user-service:3002", {
+  proxy("user-service:3003", {
     proxyReqPathResolver: function (req) {
       return req.originalUrl;
     },
