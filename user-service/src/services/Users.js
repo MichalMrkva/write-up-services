@@ -66,12 +66,15 @@ class UsersService {
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");
 
     const token = jwt.sign(
-      { userId: user.id },
-      {email:user.email},
-      {username:user.username},
+    {
+      userId: user.id,
+      email: user.email,
+      username: user.username
+    },
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
+
 
     const dtoOut={token,user_id:user._id,email:user.email,username:user.username}
 
