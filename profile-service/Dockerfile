@@ -6,9 +6,8 @@ COPY . .
 
 FROM node:lts-alpine
 WORKDIR /app
-COPY .env .
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/src ./src
-EXPOSE 3003
+EXPOSE 3002
 CMD ["npm", "start"]
