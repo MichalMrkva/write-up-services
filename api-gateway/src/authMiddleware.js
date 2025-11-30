@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { decode } from 'jsonwebtoken';
 
 
 export default function authMiddleware(req, res, next) {
@@ -11,12 +11,13 @@ export default function authMiddleware(req, res, next) {
         const token = authHeader.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        delete req.headers['x-user-id']
+        delete req.headers['x-user-email']
+        delete req.headers['x-user-username']
         
-        req.user = {
-            userId: decoded.userId,
-            email: decoded.email ,
-            username:decoded.username
-        };
+        req.headers['x-user-id'] = decoded.userId
+        req.headers['x-user-email'] = decoded.email
+        req.headers['x-user-username'] = decoded.username
 
         next(); 
     } catch (err) {
