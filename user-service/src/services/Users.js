@@ -76,7 +76,7 @@ class UsersService {
     );
 
 
-    const dtoOut={token,user_id:user._id,email:user.email,username:user.username}
+    const dtoOut={token,user_id:user.id,email:user.email,username:user.username}
 
     return dtoOut;
   }
