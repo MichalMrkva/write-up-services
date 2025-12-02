@@ -6,9 +6,9 @@ import { loginSchema } from "../validation/login-schema.js";
 import { getAuthRepoSingleton } from "../repositories/auth-repository.js";
 import { AuthError } from "../errors/auth.js";
 import { ValidationError } from "../errors/validation.js";
-import dotenv from "dotenv";
 
-dotenv.config();
+
+
 
 let serviceSingleton;
 
@@ -65,19 +65,47 @@ class UsersService {
     const isMatch = await bcrypt.compare(dtoIn.password, user.password_hash);
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");
 
+    const authorId=await this.getProfileId(user.id)
+ 
+
     const token = jwt.sign(
     {
       userId: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
+      authorId
     },
       process.env.JWT_SECRET,
       { expiresIn: "30d" }
     );
 
 
-    const dtoOut={token,user_id:user.id,email:user.email,username:user.username}
+    const dtoOut={token,user_id:user.id,email:user.email,username:user.username,authorId}
 
     return dtoOut;
   }
+  async getProfileId(user_id) {
+    //localhost
+    const PROFILE_SERVICE_URL = "http://localhost:3003/api/v1/profile";
+
+    // docker?
+    // const PROFILE_SERVICE_URL = "http://profile-service:3003/api/v1/profile";
+
+    const res = await fetch(`${PROFILE_SERVICE_URL}?user_id=${user_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Profile service error:", res.status, text);
+      return null;
+    }
+
+    const profile = await res.json();
+    return profile?.id || null;
+  }
+
 }

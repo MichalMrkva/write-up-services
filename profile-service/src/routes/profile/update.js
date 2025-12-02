@@ -7,7 +7,7 @@ export const update= async(req,res)=>
 {
     console.log("Req dorazil do controlleru update")
     const service=await getProfileServiceSingleton();
-    const dtoIn={ ...req.body, user_id:req.user};
+    const dtoIn={ ...req.body, user_id:req.user.user_id};
     console.log(service.update)
     try{
         const dtOut=await service.update(dtoIn)
