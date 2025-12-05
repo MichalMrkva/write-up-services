@@ -7,14 +7,20 @@ services:
     ports:
       - 3000:3000
 
-  #  books-service:
-  #    build: ./books-service
-  #    container_name: books-service
-  #    ports:
-  #      - 3001:3001
+  books-service:
+    build: ./books-service
+    container_name: books-service
+    ports:
+      - 3001:3001
+
+  profile-service:
+    build: ./profile-service
+    container_name: profile-service
+    ports:
+      - 3002:3002
 
   user-service:
     build: ./user-service
     container_name: user-service
     ports:
-      - 3002:3002
+      - 3003:3003

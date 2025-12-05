@@ -1,9 +1,11 @@
 import express from "express";
 import proxy from "express-http-proxy";
 import authMiddleware from "./authMiddleware.js";
+import cors from "cors";
 
 const app = express();
 const port = 3000;
+app.use(cors());
 
 app.use((req, res, next) => {
   console.info(`[${new Date().toISOString()}]:[${req.method}]:[${req.path}]`);
