@@ -181,7 +181,7 @@ class UsersService {
   }
   async getBlacklist(dtoIn)
   {
-    return await this.#repo.getBlacklist(dtoIn.token)
+    return await this.#repo.isAccessTokenBlacklisted(dtoIn.token)
     
   }
 }

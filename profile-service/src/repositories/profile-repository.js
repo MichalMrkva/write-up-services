@@ -63,7 +63,7 @@ class ProfileRepository {
   async get(dtoIn)
   {
     try{
-      const res=await this.#client.query(queryGet,[dtoIn.id,dtoIn.user_id]);
+      const res=await this.#client.query(queryGet,[dtoIn.id,dtoIn.userId]);
       if(res.rows[0])
       {
         console.log("Changes:",res.rows[0]);

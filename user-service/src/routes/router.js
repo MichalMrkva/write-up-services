@@ -10,8 +10,8 @@ import { getBlacklist } from "./users/getBlacklist.js";
 
 router.post("/api/v1/user/register", register);
 router.post("/api/v1/user/token/login", login);
-router.post("/api/v1/user/token/signout",signout)
+router.post("/api/v1/user/signout",signout)
 router.get("/api/v1/user/token/refresh",refresh)
-router.get("/api/v1/user/token/getBlacklist",refresh)
+router.get("/api/v1/user/getBlacklist",getBlacklist)
 
 export default router;

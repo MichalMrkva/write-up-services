@@ -7,7 +7,8 @@ export const getBlacklist= async(req,res)=>
 {
     console.log("Req dorazil do controlleru getBlacklist")
     const service= await getUsersServiceSingleton();     
-    const dtoIn=res.query    
+    const dtoIn=req.query;
+    console.log(dtoIn);
 
     console.log(service.getBlacklist)
     try{
