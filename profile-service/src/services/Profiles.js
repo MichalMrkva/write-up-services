@@ -5,13 +5,10 @@ import { uploadSchema } from "../validation/upload-schema.js";
 import { getProfileRepoSingleton } from "../repositories/profile-repository.js";
 import { ValidationError } from "../errors/validation.js";
 import { AuthError } from "../errors/auth.js";
-import dotenv from "dotenv";
 import addFormats from "ajv-formats";
 import { supabase } from "../db/supabase-client.js";
 import { FileError } from "../errors/file.js";
 
-
-dotenv.config();
 
 let serviceSingleton;
 

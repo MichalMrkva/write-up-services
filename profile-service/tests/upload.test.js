@@ -19,7 +19,7 @@ describe("Profile routes (running server)", () => {
     const res = await request(BASE_URL)
       .post("/api/v1/profile/upload")
       .attach("avatar", testFilePath) 
-      .field("user_id", "ed79c3f9-5ad0-4950-a3df-e06d60a9c36f");
+      .set("X-User-Id", "ed79c3f9-5ad0-4950-a3df-e06d60a9c36f");
 
     expect(res.status).toBe(201);
     
@@ -28,7 +28,7 @@ describe("Profile routes (running server)", () => {
 
     const res = await request(BASE_URL)
       .post("/api/v1/profile/upload")
-      .field("user_id", "9f3c1f3b-7d9a-4e8d-92a4-1c6ab4cbb123");
+      .set("X-User-Id", "9f3c1f3b-7d9a-4e8d-92a4-1c6ab4cbb123");
 
     expect(res.status).toBe(400);
     

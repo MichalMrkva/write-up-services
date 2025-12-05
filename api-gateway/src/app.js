@@ -30,6 +30,15 @@ app.use(
   })
 );
 
+app.use(
+  "/api/v1/profile",
+  proxy("books-service:3002", {
+    proxyReqPathResolver: function (req) {
+      return req.originalUrl;
+    },
+  })
+);
+
 app.listen(port, () => {
   console.log("app running");
 });

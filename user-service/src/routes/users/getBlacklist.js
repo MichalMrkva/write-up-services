@@ -1,21 +1,23 @@
 import { AuthError } from "../../errors/auth.js";
 import { ValidationError } from "../../errors/validation.js";
 import { DatabaseError } from "../../errors/database.js";
-import { getProfileServiceSingleton } from "../../services/Profiles.js";
+import { getUsersServiceSingleton } from "../../services/Users.js";
 import { serverError } from "../../const/default-errors.js";
-export const update= async(req,res)=>
+export const getBlacklist= async(req,res)=>
 {
-    console.log("Req dorazil do controlleru update")
-    const service=await getProfileServiceSingleton();
-    const dtoIn={ ...req.body, user_id:req.user.user_id};
-    console.log(service.update)
+    console.log("Req dorazil do controlleru getBlacklist")
+    const service= await getUsersServiceSingleton();     
+    const dtoIn=req.query;
+    console.log(dtoIn);
+
+    console.log(service.getBlacklist)
     try{
-        const dtOut=await service.update(dtoIn)
-        res.status(201).json(dtOut);
+        const dtOut=await service.getBlacklist(dtoIn)
+        res.status(200).json(dtOut);
     }
     catch(err)
-    {
-        console.log("Update controller error:",err)
+    {   
+        console.log("getBlacklist controller error:",err)
         if( err instanceof ValidationError)
         {
             res.status(err.status).json({
