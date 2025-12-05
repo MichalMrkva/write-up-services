@@ -70,7 +70,7 @@ class ProfileRepository {
         return("List of changes:",res.rows[0]);
 
       }
-      throw new DatabaseError("Author profil doesnt exist")
+      return {message:"Author profil doesnt exist"};
 
     }
     catch (err) {
