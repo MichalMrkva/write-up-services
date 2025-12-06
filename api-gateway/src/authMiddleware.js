@@ -32,10 +32,18 @@ export default async function authMiddleware(req, res, next) {
             return res.status(401).json({ code: "BlacklistedToken", message: "Token is blacklisted" });
         }
 
+        delete req.headers['x-user-id'];
+        delete req.headers['x-user-email']
+        delete req.headers['x-user-username'];
+        delete req.headers['x-author-id'];
         
         req.headers['x-user-id'] = decoded.userId;
         req.headers['x-user-email'] = decoded.email;
         req.headers['x-user-username'] = decoded.username;
+        const authorId = decoded.authorId;
+        if(authorId) {
+            req.headers['x-author-id'] = decoded.authorId;
+        }
 
         next();
     } catch (err) {
