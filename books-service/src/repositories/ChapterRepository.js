@@ -21,7 +21,7 @@ const queryInsertChapter = `--sql
   FROM
       books b
   WHERE
-      b.id = $1 AND b.user_id = $2
+      b.id = $1 AND b.author_id = $2
   RETURNING id, book_id AS "bookId", name, content, created_at AS "createdAt", updated_at AS "updatedAt";
 `;
 
@@ -43,13 +43,13 @@ const queryUpdateChapter = `--sql
   UPDATE chapters c
   SET
       name = COALESCE((($4::JSONB)->>'name')::VARCHAR(100), c.name),
-      content = COALESCE((($4::JSONB)->>'content')::VARCHAR(2000), c.content)
+      content = COALESCE((($4::JSONB)->>'content')::VARCHAR(20000), c.content)
   FROM books b
   WHERE
       c.id = $1 AND
       b.id = $2 AND
       c.book_id = b.id AND
-      b.user_id = $3
+      b.author_id = $3
   RETURNING c.id AS "id", c.book_id AS "bookId", c.name AS "name", c.content AS "content", c.created_at AS "createdAt", c.updated_at AS "updatedAt";
 `;
 
@@ -60,7 +60,7 @@ const queryDeleteChapter = `--sql
       c.id = $1 AND
       b.id = $2 AND
       c.book_id = b.id AND
-      b.user_id = $3;
+      b.author_id = $3;
 `;
 
 class ChaptersRepository {
@@ -108,7 +108,7 @@ class ChaptersRepository {
       ]);
       if (result.rowCount === 0) {
         throw new DatabaseError(
-          "Book not found or user is not authorized to update this book.",
+          "Book not found or author is not authorized to update this book.",
           null,
           403,
           "BOOK_UPDATE_UNAUTHORIZED_OR_NOT_FOUND"

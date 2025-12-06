@@ -9,7 +9,7 @@ import { getAuthRepoSingleton } from "../repositories/auth-repository.js";
 import { AuthError } from "../errors/auth.js";
 import { ValidationError } from "../errors/validation.js";
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config({ quiet: true });
 
 let serviceSingleton;
@@ -41,10 +41,12 @@ class UsersService {
       /^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\sA-Za-z0-9])(?!.*\s).*$/;
 
     if (!strongPwRegex.test(dtoIn.password)) {
-      throw new ValidationError([{
-        message:
-          "Weak password: must have 10+ chars, upper/lowercase, number, special char, no spaces.",
-      }]);
+      throw new ValidationError([
+        {
+          message:
+            "Weak password: must have 10+ chars, upper/lowercase, number, special char, no spaces.",
+        },
+      ]);
     }
 
     const hashed = await bcrypt.hash(dtoIn.password, 10);
@@ -68,24 +70,23 @@ class UsersService {
 
     const authorId = await this.getProfileId(user.id);
     let accessToken;
-    if(!authorId)
-    {
-      
-        accessToken = jwt.sign(
+    if (!authorId) {
+      accessToken = jwt.sign(
         { userId: user.id, email: user.email, username: user.username },
         process.env.JWT_SECRET,
         { expiresIn: "15m" }
       );
-
-    }
-    else{
-        
+    } else {
       accessToken = jwt.sign(
-        { userId: user.id, email: user.email, username: user.username, authorId },
+        {
+          userId: user.id,
+          email: user.email,
+          username: user.username,
+          authorId,
+        },
         process.env.JWT_SECRET,
         { expiresIn: "15m" }
       );
-
     }
 
     const refreshToken = jwt.sign(
@@ -94,11 +95,16 @@ class UsersService {
       { expiresIn: "30d" }
     );
 
-    
-
     await this.#repo.saveToken(user.id, refreshToken);
 
-    return { accessToken, refreshToken, user_id: user.id, email: user.email, username: user.username, authorId };
+    return {
+      accessToken,
+      refreshToken,
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+      authorId,
+    };
   }
 
   async signout(dtoIn) {
@@ -106,7 +112,8 @@ class UsersService {
     if (!validate(dtoIn)) throw new ValidationError(validate.errors);
 
     const accessToken = dtoIn.accessToken;
-    if (!accessToken) throw new AuthError("Missing access token", "MissingToken");
+    if (!accessToken)
+      throw new AuthError("Missing access token", "MissingToken");
 
     let payload;
     try {
@@ -117,17 +124,14 @@ class UsersService {
 
     const userId = payload.userId;
 
-    
     await this.#repo.blacklistAccessToken(accessToken);
     console.log("Access token blacklisted for user:", userId);
 
-    
     await this.#repo.signout(userId);
     console.log("Refresh token deleted for user:", userId);
 
     return { message: "Signout success" };
-}
-
+  }
 
   async refresh(dtoIn) {
     const validate = ajv.getSchema("refresh");
@@ -161,12 +165,9 @@ class UsersService {
   }
 
   async getProfileId(userId) {
-    const PROFILE_SERVICE_URL = "http://localhost:3003/api/v1/profile";
+    const PROFILE_SERVICE_URL = "http://profile-service:3002/api/v1/profile";
 
-    // docker?
-    // const PROFILE_SERVICE_URL = "http://profile-service:3003/api/v1/profile";
-
-    const res = await fetch(`${PROFILE_SERVICE_URL}?user_id=${userId}`, {
+    const res = await fetch(`${PROFILE_SERVICE_URL}?userId=${userId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -179,10 +180,8 @@ class UsersService {
     const profile = await res.json();
     return profile?.id || null;
   }
-  async getBlacklist(dtoIn)
-  {
-    return await this.#repo.isAccessTokenBlacklisted(dtoIn.token)
-    
+  async getBlacklist(dtoIn) {
+    return await this.#repo.isAccessTokenBlacklisted(dtoIn.token);
   }
 }
 

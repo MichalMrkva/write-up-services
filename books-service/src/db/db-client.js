@@ -6,7 +6,7 @@ let pool;
 const createBooksTable = `--sql
   CREATE TABLE IF NOT EXISTS books (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL,
+    author_id UUID NOT NULL,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(200),
     genre VARCHAR(20),
@@ -41,7 +41,7 @@ const createChapterTable = `--sql
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     book_id UUID NOT NULL REFERENCES books(id) ON DELETE CASCADE ON UPDATE CASCADE,
     name VARCHAR(100) NOT NULL,
-    content VARCHAR(2000),
+    content VARCHAR(20000),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
   )

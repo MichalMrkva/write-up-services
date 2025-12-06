@@ -3,21 +3,21 @@ export const updateSchema = {
   properties: {
     id: {
       type: "string",
-      format: "uuid"
+      format: "uuid",
     },
     bio: {
       type: "string",
-      maxLength: 1000
+      maxLength: 1000,
     },
     genre: {
       type: "string",
-      maxLength:255
+      maxLength: 255,
     },
-    user_id:{
+    userId: {
       type: "string",
-      format: "uuid"
+      format: "uuid",
     },
   },
-  required: ["id","user_id"],
-  additionalProperties: false
+  required: ["id", "userId"],
+  additionalProperties: false,
 };

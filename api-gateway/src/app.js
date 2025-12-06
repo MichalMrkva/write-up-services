@@ -2,7 +2,9 @@ import express from "express";
 import proxy from "express-http-proxy";
 import authMiddleware from "./authMiddleware.js";
 import cors from "cors";
+import { setup } from "./const.js";
 
+setup();
 const app = express();
 const port = 3000;
 app.use(cors());
@@ -32,7 +34,7 @@ app.use(
 
 app.use(
   "/api/v1/profile",
-  proxy("books-service:3002", {
+  proxy("profile-service:3002", {
     proxyReqPathResolver: function (req) {
       return req.originalUrl;
     },

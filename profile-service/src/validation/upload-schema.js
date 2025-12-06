@@ -1,11 +1,11 @@
 export const uploadSchema = {
   type: "object",
   properties: {
-    user_id:{
+    userId: {
       type: "string",
-      format: "uuid"
+      format: "uuid",
     },
   },
-  required: ["user_id"],
-  additionalProperties: false
+  required: ["userId"],
+  additionalProperties: false,
 };
