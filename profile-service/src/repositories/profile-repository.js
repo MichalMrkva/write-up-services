@@ -46,7 +46,7 @@ class ProfileRepository {
   async create(dtoIn) {
     try {
       const res = await this.#client.query(queryCreate, [
-        dtoIn.user_id,
+        dtoIn.userId,
         dtoIn.email,
         dtoIn.username,
       ]);
@@ -101,12 +101,12 @@ class ProfileRepository {
     }
     
   }
-  async upload(user_id,img_url)
+  async upload(userId,img_url)
   { 
     try{
       const res=await this.#client.query(queryUpload,[
 
-        user_id,
+        userId,
         img_url
       ]);
       if(res.rows[0])

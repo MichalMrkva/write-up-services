@@ -11,7 +11,7 @@ export async function getAuthRepoSingleton() {
 }
 
 const createUsersTableQuery = `
-CREATE TABLE IF NOT EXISTS users2 (
+CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(255) NOT NULL UNIQUE,
   username VARCHAR(255) NOT NULL UNIQUE,
@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS access_token_blacklist (
 )
 `;
 
-const queryRegister = `INSERT INTO users2 (email, password_hash, username) VALUES ($1, $2, $3) RETURNING *`;
-const queryLogin = `SELECT * FROM users2 WHERE email = $1`;
-const querySaveToken = `UPDATE users2 SET refresh_token = $2 WHERE id = $1 RETURNING *`;
-const querySignout = `UPDATE users2 SET refresh_token = NULL WHERE id = $1 RETURNING *`;
-const queryGetToken = `SELECT refresh_token, email, username FROM users2 WHERE id = $1`;
+const queryRegister = `INSERT INTO users (email, password_hash, username) VALUES ($1, $2, $3) RETURNING *`;
+const queryLogin = `SELECT * FROM users WHERE email = $1`;
+const querySaveToken = `UPDATE users SET refresh_token = $2 WHERE id = $1 RETURNING *`;
+const querySignout = `UPDATE users SET refresh_token = NULL WHERE id = $1 RETURNING *`;
+const queryGetToken = `SELECT refresh_token, email, username FROM users WHERE id = $1`;
 const queryBlacklistToken = `INSERT INTO access_token_blacklist (access_token) VALUES ($1) ON CONFLICT DO NOTHING`;
 const queryIsTokenBlacklisted = `SELECT 1 FROM access_token_blacklist WHERE access_token = $1`;
 

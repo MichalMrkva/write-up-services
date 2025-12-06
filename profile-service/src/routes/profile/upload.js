@@ -9,7 +9,7 @@ export const upload= async(req,res)=>
     console.log("Req dorazil do controlleru upload")
     console.log("req body",req.body)
     const service=await getProfileServiceSingleton();
-    const dtoIn = {user_id: req.user.user_id , file:req.file };
+    const dtoIn = {userId: req.user.userId , file:req.file };
     console.log(service.upload)
     try{
         const dtOut=await service.upload(dtoIn)
