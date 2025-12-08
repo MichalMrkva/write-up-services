@@ -67,9 +67,11 @@ class UsersService {
     const user = await this.#repo.login(dtoIn.email);
     const isMatch = await bcrypt.compare(dtoIn.password, user.password_hash);
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");
+    const existingRefreshToken=await this.#repo.getToken(dtoIn.email)
 
     const authorId = await this.getProfileId(user.id);
     let accessToken;
+    let refreshToken;
     if (!authorId) {
       accessToken = jwt.sign(
         { userId: user.id, email: user.email, username: user.username },
@@ -88,12 +90,20 @@ class UsersService {
         { expiresIn: "15m" }
       );
     }
+    if(existingRefreshToken)
+    {
+      refreshToken=existingRefreshToken;
 
-    const refreshToken = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: "30d" }
-    );
+    }
+    else{
+        refreshToken = jwt.sign(
+        { userId: user.id },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "30d" }
+      );
+    }
+
+    
 
     await this.#repo.saveToken(user.id, refreshToken);
 

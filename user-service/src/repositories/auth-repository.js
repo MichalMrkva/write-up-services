@@ -31,7 +31,7 @@ const queryRegister = `INSERT INTO users (email, password_hash, username) VALUES
 const queryLogin = `SELECT * FROM users WHERE email = $1`;
 const querySaveToken = `UPDATE users SET refresh_token = $2 WHERE id = $1 RETURNING *`;
 const querySignout = `UPDATE users SET refresh_token = NULL WHERE id = $1 RETURNING *`;
-const queryGetToken = `SELECT refresh_token, email, username FROM users WHERE id = $1`;
+const queryGetToken = `SELECT refresh_token, email, username FROM users WHERE id = $1 OR email=$2`;
 const queryBlacklistToken = `INSERT INTO access_token_blacklist (access_token) VALUES ($1) ON CONFLICT DO NOTHING`;
 const queryIsTokenBlacklisted = `SELECT 1 FROM access_token_blacklist WHERE access_token = $1`;
 
@@ -100,9 +100,9 @@ class AuthRepository {
     }
   }
 
-  async getToken(id) {
+  async getToken(id,email) {
     try {
-      const res = await this.#client.query(queryGetToken, [id]);
+      const res = await this.#client.query(queryGetToken, [id,email]);
       if (res.rows.length === 0) throw new DatabaseError("User not found");
       return res.rows[0]; 
     } catch (err) {
