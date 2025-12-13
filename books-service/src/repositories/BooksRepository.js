@@ -24,7 +24,55 @@ const querySelectBooks = `--sql
       genre,
       created_at AS "createdAt",
       updated_at AS "updatedAt"
-  FROM books`;
+  FROM books
+  ORDER BY updated_at DESC
+  LIMIT $1
+  OFFSET $2`;
+
+const querySelectBooksByAuthorId = `--sql
+  SELECT
+      id,
+      author_id AS "authorId",
+      name,
+      description,
+      genre,
+      created_at AS "createdAt",
+      updated_at AS "updatedAt"
+  FROM books
+  WHERE author_id = $1
+  ORDER BY name DESC
+  LIMIT $2
+  OFFSET $3`;
+
+const querySelectBooksByName = `--sql
+  SELECT
+      id,
+      author_id AS "authorId",
+      name,
+      description,
+      genre,
+      created_at AS "createdAt",
+      updated_at AS "updatedAt"
+  FROM books
+  WHERE name IS LIKE $1
+  ORDER BY name DESC
+  LIMIT $2
+  OFFSET $3`;
+
+const querySelectBooksByGenre = `--sql
+  SELECT
+      id,
+      author_id AS "authorId",
+      name,
+      description,
+      genre,
+      created_at AS "createdAt",
+      updated_at AS "updatedAt"
+  FROM books
+  WHERE genre IS LIKE $1
+  ORDER BY name DESC
+  LIMIT $2
+  OFFSET $3`;
 
 const queryDeleteBookById = `--sql
   DELETE FROM books
@@ -84,9 +132,30 @@ class BookRepository {
     }
   }
 
-  async getBooks() {
+  async getBooks(query) {
     try {
-      const res = await query(querySelectBooks);
+      let res;
+      if (query.authorId) {
+        res = await query(querySelectBooksByAuthorId, [
+          query.authorId,
+          query.offset,
+          query.limit,
+        ]);
+      } else if (query.name) {
+        res = await query(querySelectBooksByName, [
+          query.name,
+          query.offset,
+          query.limit,
+        ]);
+      } else if (query.genre) {
+        res = await query(querySelectBooksByGenre, [
+          query.genre,
+          query.offset,
+          query.limit,
+        ]);
+      } else {
+        res = await query(querySelectBooks, [query.offset, query.limit]);
+      }
       return res.rows;
     } catch (e) {
       console.log(e);

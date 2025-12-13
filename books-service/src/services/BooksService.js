@@ -38,9 +38,9 @@ class BooksService {
     return dtoOut;
   }
 
-  async getBooks() {
+  async getBooks(query) {
     try {
-      const books = await this.#repo.getBooks();
+      const books = await this.#repo.getBooks(query);
       return books;
     } catch (e) {
       console.log("[BookService] - error: ", e);
