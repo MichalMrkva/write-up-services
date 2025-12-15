@@ -52,10 +52,11 @@ const querySelectBooksByName = `--sql
       description,
       genre,
       created_at AS "createdAt",
-      updated_at AS "updatedAt"
+      updated_at AS "updatedAt",
+      similarity(name, $1) AS name_similarity
   FROM books
-  WHERE name IS LIKE $1
-  ORDER BY name DESC
+  WHERE similarity(name, $1) > 0.4
+  ORDER BY name_similarity DESC
   LIMIT $2
   OFFSET $3`;
 
@@ -69,7 +70,7 @@ const querySelectBooksByGenre = `--sql
       created_at AS "createdAt",
       updated_at AS "updatedAt"
   FROM books
-  WHERE genre IS LIKE $1
+  WHERE genre = $1
   ORDER BY name DESC
   LIMIT $2
   OFFSET $3`;
@@ -132,29 +133,36 @@ class BookRepository {
     }
   }
 
-  async getBooks(query) {
+  async getBooks(queryParams) {
+    console.log({ queryParams });
     try {
       let res;
-      if (query.authorId) {
+      if (queryParams.authorId) {
         res = await query(querySelectBooksByAuthorId, [
-          query.authorId,
-          query.offset,
-          query.limit,
+          queryParams.authorId,
+          queryParams.limit,
+          queryParams.offset,
         ]);
-      } else if (query.name) {
+      } else if (queryParams.name) {
         res = await query(querySelectBooksByName, [
-          query.name,
-          query.offset,
-          query.limit,
+          queryParams.name,
+          queryParams.limit,
+          queryParams.offset,
         ]);
-      } else if (query.genre) {
+        res.rows.forEach((row) => {
+          delete row.name_similarity;
+        });
+      } else if (queryParams.genre) {
         res = await query(querySelectBooksByGenre, [
-          query.genre,
-          query.offset,
-          query.limit,
+          queryParams.genre,
+          queryParams.limit,
+          queryParams.offset,
         ]);
       } else {
-        res = await query(querySelectBooks, [query.offset, query.limit]);
+        res = await query(querySelectBooks, [
+          queryParams.limit,
+          queryParams.offset,
+        ]);
       }
       return res.rows;
     } catch (e) {

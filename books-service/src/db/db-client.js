@@ -2,7 +2,7 @@ import { Pool } from "pg";
 import { DatabaseError } from "../errors/database.js";
 
 let pool;
-
+const createStringExt = `--sql CREATE EXTENSION IF NOT EXISTS pg_trgm;`;
 const createBooksTable = `--sql
   CREATE TABLE IF NOT EXISTS books (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -35,6 +35,7 @@ const updateBooksTrigger = `--sql
 const indexBooksUserId = `--sql CREATE UNIQUE INDEX IF NOT EXISTS idx_books_user_id ON books (user_id);`;
 const indexBooksName = `--sql CREATE INDEX IF NOT EXISTS idx_books_name ON books (name);`;
 const indexBooksGenre = `--sql CREATE INDEX IF NOT EXISTS idx_books_genre ON books (genre);`;
+const trgmIndexBooksName = `--sql CREATE INDEX trgm_idx_books_name ON books USING GIN (name gin_trgm_ops);`;
 
 const createChapterTable = `--sql
   CREATE TABLE IF NOT EXISTS chapters (
@@ -79,13 +80,14 @@ export async function initDB(user, host, database, password, port) {
   try {
     await pool.connect();
     await pool.query("SELECT 1");
-
+    await pool.query(createStringExt);
     await pool.query(createBooksTable);
     await pool.query(updateBooksTimestampFunction);
     await pool.query(updateBooksTrigger);
     await pool.query(indexBooksUserId);
     await pool.query(indexBooksName);
     await pool.query(indexBooksGenre);
+    await pool.query(trgmIndexBooksName);
 
     await pool.query(createChapterTable);
     await pool.query(updateChaptersTimestampFunction);
