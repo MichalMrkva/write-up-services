@@ -13,6 +13,7 @@ export const getBlacklist= async(req,res)=>
     console.log(service.getBlacklist)
     try{
         const dtOut=await service.getBlacklist(dtoIn)
+        console.log(dtOut);
         res.status(200).json(dtOut);
     }
     catch(err)
