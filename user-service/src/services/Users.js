@@ -67,7 +67,7 @@ class UsersService {
     const user = await this.#repo.login(dtoIn.email);
     const isMatch = await bcrypt.compare(dtoIn.password, user.password_hash);
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");
-    const existingRefreshToken=await this.#repo.getToken(dtoIn.email)
+    const existingRefreshToken=await this.#repo.getToken(undefined,dtoIn.email)
 
     const authorId = await this.getProfileId(user.id);
     let accessToken;
@@ -158,7 +158,7 @@ class UsersService {
     }
 
     const userId = payload.userId;
-    const user = await this.#repo.getToken(userId);
+    const user = await this.#repo.getToken(userId,undefined);
     if (!user || user.refresh_token !== token) {
       throw new AuthError("Incorrect refresh token", "IncorrectToken");
     }
