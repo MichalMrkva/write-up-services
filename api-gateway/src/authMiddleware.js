@@ -39,7 +39,7 @@ export default async function authMiddleware(req, res, next) {
     }
 
     const isBlacklisted = await blacklistRes.json();
-    if (isBlacklisted) {
+    if (isBlacklisted===true) {
       return res
         .status(401)
         .json({ code: "BlacklistedToken", message: "Token is blacklisted" });
