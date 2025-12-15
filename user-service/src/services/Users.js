@@ -92,7 +92,7 @@ class UsersService {
     }
     if(existingRefreshToken)
     {
-      refreshToken=existingRefreshToken;
+      refreshToken=existingRefreshToken.refresh_token;
 
     }
     else{
