@@ -90,7 +90,7 @@ class UsersService {
         { expiresIn: "15m" }
       );
     }
-    if(existingRefreshToken)
+    if(existingRefreshToken.refresh_token)
     {
       refreshToken=existingRefreshToken.refresh_token;
 
