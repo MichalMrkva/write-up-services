@@ -21,7 +21,7 @@ export default async function authMiddleware(req, res, next) {
     }
 
     const USER_SERVICE_URL =
-      "http://user-service:3003/api/v1/user/getBlacklist";
+      "http://user-service-test:3003/api/v1/user/getBlacklist";
     const blacklistRes = await fetch(`${USER_SERVICE_URL}?token=${token}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },

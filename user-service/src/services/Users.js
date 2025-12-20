@@ -67,7 +67,10 @@ class UsersService {
     const user = await this.#repo.login(dtoIn.email);
     const isMatch = await bcrypt.compare(dtoIn.password, user.password_hash);
     if (!isMatch) throw new AuthError("Invalid password", "PasswordNotMatch");
-    const existingRefreshToken=await this.#repo.getToken(undefined,dtoIn.email)
+    const existingRefreshToken = await this.#repo.getToken(
+      undefined,
+      dtoIn.email
+    );
 
     const authorId = await this.getProfileId(user.id);
     let accessToken;
@@ -90,20 +93,15 @@ class UsersService {
         { expiresIn: "15m" }
       );
     }
-    if(existingRefreshToken.refresh_token)
-    {
-      refreshToken=existingRefreshToken.refresh_token;
-
-    }
-    else{
-        refreshToken = jwt.sign(
+    if (existingRefreshToken.refresh_token) {
+      refreshToken = existingRefreshToken.refresh_token;
+    } else {
+      refreshToken = jwt.sign(
         { userId: user.id },
         process.env.JWT_REFRESH_SECRET,
         { expiresIn: "30d" }
       );
     }
-
-    
 
     await this.#repo.saveToken(user.id, refreshToken);
 
@@ -158,7 +156,7 @@ class UsersService {
     }
 
     const userId = payload.userId;
-    const user = await this.#repo.getToken(userId,undefined);
+    const user = await this.#repo.getToken(userId, undefined);
     if (!user || user.refresh_token !== token) {
       throw new AuthError("Incorrect refresh token", "IncorrectToken");
     }
@@ -175,7 +173,8 @@ class UsersService {
   }
 
   async getProfileId(userId) {
-    const PROFILE_SERVICE_URL = "http://profile-service:3002/api/v1/profile";
+    const PROFILE_SERVICE_URL =
+      "http://profile-service-test:3002/api/v1/profile";
 
     const res = await fetch(`${PROFILE_SERVICE_URL}?userId=${userId}`, {
       method: "GET",

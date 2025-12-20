@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 });
 app.use(
   "/api/v1/user",
-  proxy("user-service:3003", {
+  proxy("user-service-test:3003", {
     proxyReqPathResolver: function (req) {
       return req.originalUrl;
     },
@@ -25,7 +25,7 @@ app.use(authMiddleware);
 
 app.use(
   "/api/v1/books",
-  proxy("books-service:3001", {
+  proxy("books-service-test:3001", {
     proxyReqPathResolver: function (req) {
       return req.originalUrl;
     },
@@ -34,7 +34,7 @@ app.use(
 
 app.use(
   "/api/v1/profile",
-  proxy("profile-service:3002", {
+  proxy("profile-service-test:3002", {
     proxyReqPathResolver: function (req) {
       return req.originalUrl;
     },
