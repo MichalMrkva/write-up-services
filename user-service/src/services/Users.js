@@ -37,6 +37,19 @@ class UsersService {
     const validate = ajv.getSchema("register");
     if (!validate(dtoIn)) throw new ValidationError(validate.errors);
 
+    const validUsernameRegex="^[a-zA-Z0-9._-]+$";
+    if(!validUsernameRegex.test(dtoIn.username))
+    {
+      throw new ValidationError([
+        {
+          message:
+            "Username should only have basic characters",
+        },
+      ]);
+
+    }
+
+
     const strongPwRegex =
       /^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\sA-Za-z0-9])(?!.*\s).*$/;
 
