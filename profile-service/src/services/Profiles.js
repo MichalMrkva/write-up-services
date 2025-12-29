@@ -58,8 +58,12 @@ class ProfileService {
     if(!isValid) throw new ValidationError(validate.errors);
     console.log("Validace prošla");
 
+    console.log("Dtoin userId:",dtoIn.userId);
+    
+
     const auth=await this.#repo.get(dtoIn);
-    if(dtoIn.user_id!==auth.user_id)
+    console.log("Databaze userId", auth.userId)
+    if(dtoIn.userId!==auth.userId)
     {
       throw new AuthError("You are not owner of this account")
     }
@@ -68,9 +72,9 @@ class ProfileService {
     return result;
   }
   async upload(dtoIn) {
-    const { file, user_id } = dtoIn;
+    const { file, userId } = dtoIn;
     const validate = ajv.getSchema("upload");
-    const isValid = validate({ user_id });
+    const isValid = validate({ userId });
     if (!isValid) throw new ValidationError(validate.errors);
     console.log("Validace prošla");
     
@@ -95,7 +99,7 @@ class ProfileService {
 
 
     const ext = file.originalname.split(".").pop();
-    const fileName = `user-${user_id}-${Date.now()}.${ext}`;
+    const fileName = `user-${userId}-${Date.now()}.${ext}`;
     const bucketName = "avatars";
 
     const { data, error } = await supabase.storage
@@ -106,7 +110,7 @@ class ProfileService {
     const img_url=process.env.SUPABASE_URL+"/storage/v1/object/public/avatars/"+data.path
     
     console.log("Cesta k souboru:",img_url);
-    const result=await this.#repo.upload(dtoIn.user_id,img_url)
+    const result=await this.#repo.upload(userId,img_url)
     return result;
   }
 

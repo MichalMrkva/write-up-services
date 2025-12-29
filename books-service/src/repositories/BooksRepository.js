@@ -12,29 +12,78 @@ export function getBookRepoSingleton() {
   }
 }
 
-const queryInsertBook = `INSERT INTO books (user_id, name, description, genre) VALUES ($1, $2, $3, $4) 
-  RETURNING id, user_id AS "userId", name, description, genre, created_at AS "createdAt", updated_at AS "updatedAt"`;
+const queryInsertBook = `INSERT INTO books (author_id, name, description, genre) VALUES ($1, $2, $3, $4) 
+  RETURNING id, author_id AS "authorId", name, description, genre, created_at AS "createdAt", updated_at AS "updatedAt"`;
 
 const querySelectBooks = `--sql
   SELECT
       id,
-      user_id AS "userId",
+      author_id AS "authorId",
       name,
       description,
       genre,
       created_at AS "createdAt",
       updated_at AS "updatedAt"
-  FROM books`;
+  FROM books
+  ORDER BY updated_at DESC
+  LIMIT $1
+  OFFSET $2`;
+
+const querySelectBooksByAuthorId = `--sql
+  SELECT
+      id,
+      author_id AS "authorId",
+      name,
+      description,
+      genre,
+      created_at AS "createdAt",
+      updated_at AS "updatedAt"
+  FROM books
+  WHERE author_id = $1
+  ORDER BY name DESC
+  LIMIT $2
+  OFFSET $3`;
+
+const querySelectBooksByName = `--sql
+  SELECT
+      id,
+      author_id AS "authorId",
+      name,
+      description,
+      genre,
+      created_at AS "createdAt",
+      updated_at AS "updatedAt",
+      similarity(name, $1) AS name_similarity
+  FROM books
+  WHERE similarity(name, $1) > 0.4
+  ORDER BY name_similarity DESC
+  LIMIT $2
+  OFFSET $3`;
+
+const querySelectBooksByGenre = `--sql
+  SELECT
+      id,
+      author_id AS "authorId",
+      name,
+      description,
+      genre,
+      created_at AS "createdAt",
+      updated_at AS "updatedAt"
+  FROM books
+  WHERE genre = $1
+  ORDER BY name DESC
+  LIMIT $2
+  OFFSET $3`;
 
 const queryDeleteBookById = `--sql
   DELETE FROM books
-  WHERE id = $1 AND user_id = $2;
+  WHERE id = $1 AND author_id = $2;
 `;
 
 const querySelectBookById = `--sql
   SELECT
       b.id AS "id",
-      b.user_id AS "userId",
+      b.author_id AS "authorId",
       b.name AS "name",
       b.description AS "description",
       b.genre AS "genre",
@@ -59,8 +108,8 @@ const queryUpdateBookById = `--sql
     name = COALESCE((($3::JSONB)->>'name')::VARCHAR(100), books.name),
     genre = COALESCE((($3::JSONB)->>'genre')::VARCHAR(20), books.genre),
     description = COALESCE((($3::JSONB)->>'description')::VARCHAR(200), books.description)
-  WHERE id = $1 AND user_id = $2
-  RETURNING id, user_id AS userId, name, description, genre, created_at AS createdAt, updated_at AS updatedAt;
+  WHERE id = $1 AND author_id = $2
+  RETURNING id, author_id AS "authorId", name, description, genre, created_at AS "createdAt", updated_at AS "updatedAt";
 `;
 
 class BookRepository {
@@ -84,9 +133,37 @@ class BookRepository {
     }
   }
 
-  async getBooks() {
+  async getBooks(queryParams) {
+    console.log({ queryParams });
     try {
-      const res = await query(querySelectBooks);
+      let res;
+      if (queryParams.authorId) {
+        res = await query(querySelectBooksByAuthorId, [
+          queryParams.authorId,
+          queryParams.limit,
+          queryParams.offset,
+        ]);
+      } else if (queryParams.name) {
+        res = await query(querySelectBooksByName, [
+          queryParams.name,
+          queryParams.limit,
+          queryParams.offset,
+        ]);
+        res.rows.forEach((row) => {
+          delete row.name_similarity;
+        });
+      } else if (queryParams.genre) {
+        res = await query(querySelectBooksByGenre, [
+          queryParams.genre,
+          queryParams.limit,
+          queryParams.offset,
+        ]);
+      } else {
+        res = await query(querySelectBooks, [
+          queryParams.limit,
+          queryParams.offset,
+        ]);
+      }
       return res.rows;
     } catch (e) {
       console.log(e);
@@ -94,12 +171,12 @@ class BookRepository {
     }
   }
 
-  async deleteBookById(bookId, userId) {
+  async deleteBookById(bookId, authorId) {
     try {
-      const result = await query(queryDeleteBookById, [bookId, userId]);
+      const result = await query(queryDeleteBookById, [bookId, authorId]);
       if (result.rowCount === 1) {
         console.log(
-          `Book with ID ${bookId} successfully deleted by user ${userId}.`
+          `Book with ID ${bookId} successfully deleted by user ${authorId}.`
         );
         return true;
       } else {
@@ -128,7 +205,7 @@ class BookRepository {
     if (res.rows.length > 0) {
       const book = {
         id: res.rows[0].id,
-        userId: res.rows[0].userId,
+        authorId: res.rows[0].authorId,
         name: res.rows[0].name,
         description: res.rows[0].description,
         genre: res.rows[0].genre,
@@ -153,9 +230,13 @@ class BookRepository {
     }
   }
 
-  async updateBookById(bookId, userId, dtoIn) {
+  async updateBookById(bookId, authorId, dtoIn) {
     try {
-      const result = await query(queryUpdateBookById, [bookId, userId, dtoIn]);
+      const result = await query(queryUpdateBookById, [
+        bookId,
+        authorId,
+        dtoIn,
+      ]);
       if (result.rowCount === 0) {
         throw new DatabaseError(
           "Book not found or user is not authorized to update this book.",

@@ -6,8 +6,15 @@ import { getBooksServiceSingleton } from "../../services/BooksService.js";
 
 export const getBooks = async (req, res) => {
   try {
+    const query = {
+      authorId: req.query.authorId,
+      name: req.query.name,
+      genre: req.query.genre,
+      offset: parseInt(req.query.offset) || 0,
+      limit: parseInt(req.query.limit) || 50,
+    };
     const service = getBooksServiceSingleton();
-    const dtoOut = await service.getBooks();
+    const dtoOut = await service.getBooks(query);
     res.status(200).json(dtoOut);
   } catch (err) {
     console.log(err);

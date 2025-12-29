@@ -26,12 +26,10 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 `;
 
-
-const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING *`;
-const queryGet=`SELECT * from profiles WHERE id=$1 OR user_id = $2 `;
-const queryUpdate=`UPDATE profiles SET bio=$2,genre=$3 WHERE id=$1 RETURNING *`
-const queryUpload=`UPDATE profiles SET img_url=$2 WHERE user_id=$1  RETURNING *`
-
+const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING id,user_id AS "userId",email,username,bio,img_url AS "imgUrl", genre`;
+const queryGet = `SELECT id,user_id AS "userId",email,username,bio,img_url AS "imgUrl",genre FROM profiles WHERE id=$1 OR user_id = $2 `;
+const queryUpdate = `UPDATE profiles SET bio=$2,genre=$3 WHERE id=$1 RETURNING id,user_id AS "userId",email,username,bio,img_url AS "imgUrl",genre`;
+const queryUpload = `UPDATE profiles SET img_url=$2 WHERE user_id=$1  RETURNING id,user_id AS "userId",email,username,bio,img_url AS "imgUrl",genre`;
 
 class ProfileRepository {
   #client;
@@ -46,13 +44,12 @@ class ProfileRepository {
   async create(dtoIn) {
     try {
       const res = await this.#client.query(queryCreate, [
-        dtoIn.user_id,
+        dtoIn.userId,
         dtoIn.email,
         dtoIn.username,
       ]);
-      console.log("Profil vytvořen",res.rows[0])
+      console.log("Profil vytvořen", res.rows[0]);
       return res.rows[0];
-
     } catch (err) {
       if (err.code === "23505") {
         throw new DatabaseError("Profile already exists");
@@ -60,69 +57,47 @@ class ProfileRepository {
       throw new DatabaseError("Database error: " + err.message);
     }
   }
-  async get(dtoIn)
-  {
-    try{
-      const res=await this.#client.query(queryGet,[dtoIn.id,dtoIn.user_id]);
-      if(res.rows[0])
-      {
-        console.log("Changes:",res.rows[0]);
-        return("List of changes:",res.rows[0]);
-
-      }
-      throw new DatabaseError("Author profil doesnt exist")
-
-    }
-    catch (err) {
-      throw new DatabaseError("Database error: " + err.message);
-    }
-
-  }
-  async update(dtoIn)
-  {
-    try{
-      const res=await this.#client.query(queryUpdate,[
-      dtoIn.id,
-      dtoIn.bio,
-      dtoIn.genre,
-
-      ]);
-      if(res.rows[0])
-      {
-        console.log("Autoruv profil byl updatnut",res.rows[0]);
+  
+  async get(dtoIn) {
+    try {
+      const res = await this.#client.query(queryGet, [dtoIn.id, dtoIn.userId]);
+      if (res.rows[0]) {
+        console.log("Changes:", res.rows[0]);
         return res.rows[0];
-
       }
-      throw new DatabaseError("Author profil doesnt exist")
-
-    }
-    catch (err) {
+      return { message: "Author profil doesnt exist" };
+    } catch (err) {
       throw new DatabaseError("Database error: " + err.message);
     }
-    
   }
-  async upload(user_id,img_url)
-  { 
-    try{
-      const res=await this.#client.query(queryUpload,[
 
-        user_id,
-        img_url
+  async update(dtoIn) {
+    try {
+      const res = await this.#client.query(queryUpdate, [
+        dtoIn.id,
+        dtoIn.bio,
+        dtoIn.genre,
       ]);
-      if(res.rows[0])
-      {
-        console.log("Autoruv profil byl updatnut",res.rows[0]);
+      if (res.rows[0]) {
+        console.log("Autoruv profil byl updatnut", res.rows[0]);
         return res.rows[0];
-
       }
-      throw new DatabaseError("Author profil doesnt exist")
-      
-    }
-    catch (err) {
+      throw new DatabaseError("Author profil doesnt exist");
+    } catch (err) {
       throw new DatabaseError("Database error: " + err.message);
     }
-
   }
 
-
+  async upload(userId, img_url) {
+    try {
+      const res = await this.#client.query(queryUpload, [userId, img_url]);
+      if (res.rows[0]) {
+        console.log("Autoruv profil byl updatnut", res.rows[0]);
+        return res.rows[0];
+      }
+      throw new DatabaseError("Author profil doesnt exist");
+    } catch (err) {
+      throw new DatabaseError("Database error: " + err.message);
+    }
+  }
 }
