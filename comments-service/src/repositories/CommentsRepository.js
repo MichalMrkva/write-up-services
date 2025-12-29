@@ -32,7 +32,9 @@ const querySelectCommentsByChapter = `--sql
       created_at AS "createdAt"
   FROM comments
   WHERE chapter_id = $1
-  ORDER BY created_at DESC;
+  ORDER BY created_at DESC
+  LIMIT $2
+  OFFSET $3;
 `;
 
 const queryDeleteCommentById = `--sql
@@ -57,7 +59,10 @@ const queryUpdateCommentById = `--sql
 
 class CommentRepository {
   async createComment(chapterId, userId, commentData) {
-    console.log("[CommentRepository]: Creating new comment", { chapterId, userId });
+    console.log("[CommentRepository]: Creating new comment", {
+      chapterId,
+      userId,
+    });
     try {
       const res = await query(queryInsertComment, [
         chapterId,
@@ -75,9 +80,13 @@ class CommentRepository {
     }
   }
 
-  async getCommentsByChapter(chapterId) {
+  async getCommentsByChapter(chapterId, queryParams) {
     try {
-      const res = await query(querySelectCommentsByChapter, [chapterId]);
+      const res = await query(querySelectCommentsByChapter, [
+        chapterId,
+        queryParams.limit,
+        queryParams.offset,
+      ]);
       return res.rows;
     } catch (e) {
       throw new DatabaseError(e.message);
@@ -105,7 +114,11 @@ class CommentRepository {
 
   async updateComment(commentId, userId, dtoIn) {
     try {
-      const result = await query(queryUpdateCommentById, [commentId, userId, JSON.stringify(dtoIn)]);
+      const result = await query(queryUpdateCommentById, [
+        commentId,
+        userId,
+        JSON.stringify(dtoIn),
+      ]);
       if (result.rowCount === 0) {
         throw new DatabaseError(
           "Comment not found or user is not authorized to update this comment.",

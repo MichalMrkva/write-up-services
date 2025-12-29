@@ -8,15 +8,15 @@ export const deleteComment = async (req, res) => {
   try {
     const service = getCommentsServiceSingleton();
     const { commentId } = req.params;
-    const userId = req.user?.id;
-    
+    const userId = req.headers["x-user-id"];
+
     await service.deleteComment(commentId, userId);
     res.status(204).send();
   } catch (err) {
     console.error(err);
     if (
-      err instanceof AuthError || 
-      err instanceof ValidationError || 
+      err instanceof AuthError ||
+      err instanceof ValidationError ||
       err instanceof DatabaseError
     ) {
       res.status(err.status).json({

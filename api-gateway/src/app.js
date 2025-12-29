@@ -24,6 +24,15 @@ app.use(
 app.use(authMiddleware);
 
 app.use(
+  "/api/v1/books/:bookId/chapters/:chapterId/comments/",
+  proxy("comments-service-test:3004", {
+    proxyReqPathResolver: function (req) {
+      return req.originalUrl;
+    },
+  })
+);
+
+app.use(
   "/api/v1/books",
   proxy("books-service-test:3001", {
     proxyReqPathResolver: function (req) {

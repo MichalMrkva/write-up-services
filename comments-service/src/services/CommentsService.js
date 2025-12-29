@@ -1,6 +1,6 @@
 import { AuthError } from "../errors/auth.js";
 import { ValidationError } from "../errors/validation.js";
-import { getCommentRepoSingleton } from "../repositories/comment_repository.js";
+import { getCommentRepoSingleton } from "../repositories/CommentsRepository.js";
 import { ajv } from "../validation/ajv.js";
 import {
   commentCreateSchema,
@@ -45,9 +45,9 @@ class CommentsService {
     }
   }
 
-  async getCommentsByChapter(chapterId) {
+  async getCommentsByChapter(chapterId, query) {
     try {
-      const comments = await this.#repo.getCommentsByChapter(chapterId);
+      const comments = await this.#repo.getCommentsByChapter(chapterId, query);
       return comments;
     } catch (e) {
       console.log("[CommentsService] - error: ", e);
@@ -59,7 +59,7 @@ class CommentsService {
     if (!userId) {
       throw new AuthError("Missing user id");
     }
-    
+
     try {
       await this.#repo.deleteComment(commentId, userId);
     } catch (e) {

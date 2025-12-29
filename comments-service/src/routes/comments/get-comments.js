@@ -7,8 +7,12 @@ export const getComments = async (req, res) => {
   try {
     const service = getCommentsServiceSingleton();
     const { chapterId } = req.params;
+    const query = {
+      offset: parseInt(req.query.offset) || 0,
+      limit: parseInt(req.query.limit) || 50,
+    };
 
-    const dtoOut = await service.getCommentsByChapter(chapterId);
+    const dtoOut = await service.getCommentsByChapter(chapterId, query);
     res.status(200).json(dtoOut);
   } catch (err) {
     console.error(err);
