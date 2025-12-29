@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS profiles (
 );
 `;
 
-const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING id,user_id AS userId,email,username,bio,img_url AS imgUrl,genre`;
-const queryGet = `SELECT id,user_id AS userId,email,username,bio,img_url AS imgUrl,genre FROM profiles WHERE id=$1 OR user_id = $2 `;
-const queryUpdate = `UPDATE profiles SET bio=$2,genre=$3 WHERE id=$1 RETURNING id,user_id AS userId,email,username,bio,img_url AS imgUrl,genre`;
-const queryUpload = `UPDATE profiles SET img_url=$2 WHERE user_id=$1  RETURNING id,user_id AS userId,email,username,bio,img_url AS imgUrl,genre`;
+const queryCreate = `INSERT INTO profiles (user_id, email,username) VALUES ($1,$2,$3) RETURNING id,user_id AS "userId",email,username,bio,img_url AS "imgUrl", genre`;
+const queryGet = `SELECT id,user_id AS "userId",email,username,bio,img_url AS "imgUrl",genre FROM profiles WHERE id=$1 OR user_id = $2 `;
+const queryUpdate = `UPDATE profiles SET bio=$2,genre=$3 WHERE id=$1 RETURNING id,user_id AS "userId",email,username,bio,img_url AS "imgUrl",genre`;
+const queryUpload = `UPDATE profiles SET img_url=$2 WHERE user_id=$1  RETURNING id,user_id AS "userId",email,username,bio,img_url AS "imgUrl",genre`;
 
 class ProfileRepository {
   #client;
