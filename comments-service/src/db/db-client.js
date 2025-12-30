@@ -8,6 +8,7 @@ const createCommentsTable = `--sql
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     chapter_id UUID NOT NULL,
     user_id UUID NOT NULL,
+    username VARCHAR(50) NOT NULL,
     text VARCHAR(500) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -48,14 +49,16 @@ export async function initDB(user, host, database, password, port) {
     await pool.query("SELECT 1");
 
     await pool.query(createCommentsTable);
-    
+
     await pool.query(updateCommentsTimestampFunction);
     await pool.query(updateCommentsTrigger);
 
     await pool.query(indexCommentsChapterId);
     await pool.query(indexCommentsUserId);
 
-    console.log("[Comments Service]: Database pool successfully connected and schema initialized.");
+    console.log(
+      "[Comments Service]: Database pool successfully connected and schema initialized."
+    );
   } catch (err) {
     console.error("[Comments Service]: Error connecting to database pool", err);
     throw err;

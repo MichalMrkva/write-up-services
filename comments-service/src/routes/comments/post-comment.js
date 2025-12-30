@@ -9,9 +9,15 @@ export const createComment = async (req, res) => {
     const service = getCommentsServiceSingleton();
     const { chapterId } = req.params;
     const userId = req.headers["x-user-id"];
+    const username = req.headers["x-user-username"];
     const dtoIn = req.body;
 
-    const dtoOut = await service.createComment(chapterId, userId, dtoIn);
+    const dtoOut = await service.createComment(
+      chapterId,
+      userId,
+      username,
+      dtoIn
+    );
     res.status(201).json(dtoOut);
   } catch (err) {
     console.error(err);

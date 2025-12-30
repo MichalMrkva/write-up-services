@@ -25,7 +25,7 @@ class CommentsService {
     ajv.addSchema(commentPatchSchema, "patch-comment");
   }
 
-  async createComment(chapterId, userId, dtoIn) {
+  async createComment(chapterId, userId, username, dtoIn) {
     if (!userId) {
       throw new AuthError("Missing user id");
     }
@@ -37,7 +37,12 @@ class CommentsService {
     }
 
     try {
-      const dtoOut = await this.#repo.createComment(chapterId, userId, dtoIn);
+      const dtoOut = await this.#repo.createComment(
+        chapterId,
+        userId,
+        username,
+        dtoIn
+      );
       return dtoOut;
     } catch (e) {
       console.log("[CommentsService] - error: ", e);

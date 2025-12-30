@@ -13,14 +13,16 @@ export function getCommentRepoSingleton() {
 }
 
 const queryInsertComment = `--sql
-  INSERT INTO comments (chapter_id, user_id, text) 
-  VALUES ($1, $2, $3) 
+  INSERT INTO comments (chapter_id, user_id, username, text) 
+  VALUES ($1, $2, $3, $4) 
   RETURNING 
     id, 
-    chapter_id AS "chapterId", 
+    chapter_id AS "chapterId",
     user_id AS "userId", 
+    username,
     text, 
-    created_at AS "createdAt";
+    created_at AS "createdAt",
+    updated_at AS "updatedAt";
 `;
 
 const querySelectCommentsByChapter = `--sql
@@ -28,8 +30,10 @@ const querySelectCommentsByChapter = `--sql
       id,
       chapter_id AS "chapterId",
       user_id AS "userId",
+      username,
       text,
-      created_at AS "createdAt"
+      created_at AS "createdAt",
+      updated_at AS "updatedAt"
   FROM comments
   WHERE chapter_id = $1
   ORDER BY created_at DESC
@@ -43,7 +47,7 @@ const queryDeleteCommentById = `--sql
 `;
 
 const queryUpdateCommentById = `--sql
-  UPDATE comments
+UPDATE comments
   SET
     text = COALESCE((($3::JSONB)->>'text')::VARCHAR(500), comments.text),
     updated_at = CURRENT_TIMESTAMP
@@ -51,22 +55,25 @@ const queryUpdateCommentById = `--sql
   RETURNING 
     id, 
     chapter_id AS "chapterId", 
-    user_id AS "userId", 
+    user_id AS "userId",
+    username,
     text, 
     created_at AS "createdAt",
     updated_at AS "updatedAt";
 `;
 
 class CommentRepository {
-  async createComment(chapterId, userId, commentData) {
+  async createComment(chapterId, userId, username, commentData) {
     console.log("[CommentRepository]: Creating new comment", {
       chapterId,
       userId,
+      username,
     });
     try {
       const res = await query(queryInsertComment, [
         chapterId,
         userId,
+        username,
         commentData.text,
       ]);
 

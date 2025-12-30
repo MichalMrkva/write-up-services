@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createComment } from "./comments/post-comment-by-id.js";
+import { createComment } from "./comments/post-comment.js";
 import { getComments } from "./comments/get-comments.js";
 import { patchComment } from "./comments/patch-comment.js";
 import { deleteComment } from "./comments/delete-comment.js";
