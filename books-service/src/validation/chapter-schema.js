@@ -7,7 +7,7 @@ export const chapterCreateSchema = {
     },
     content: {
       type: "string",
-      maxLength: 2000,
+      maxLength: 12000,
     },
   },
   required: ["name"],
@@ -23,7 +23,7 @@ export const chapterPatchSchema = {
     },
     content: {
       type: "string",
-      maxLength: 2000,
+      maxLength: 12000,
     },
   },
   required: [],
