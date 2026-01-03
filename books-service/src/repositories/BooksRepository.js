@@ -68,10 +68,11 @@ const querySelectBooksByGenre = `--sql
       description,
       genre,
       created_at AS "createdAt",
-      updated_at AS "updatedAt"
+      updated_at AS "updatedAt",
+      similarity(genre, $1) AS genre_similarity
   FROM books
-  WHERE genre = $1
-  ORDER BY name DESC
+  WHERE similarity(genre, $1) > 0.4
+  ORDER BY genre_similarity DESC
   LIMIT $2
   OFFSET $3`;
 
@@ -158,6 +159,9 @@ class BookRepository {
           queryParams.limit,
           queryParams.offset,
         ]);
+        res.rows.forEach((row) => {
+          delete row.genre_similarity;
+        });
       } else {
         res = await query(querySelectBooks, [
           queryParams.limit,

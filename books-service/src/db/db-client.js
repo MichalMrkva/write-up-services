@@ -36,6 +36,7 @@ const indexBooksUserId = `--sql CREATE UNIQUE INDEX IF NOT EXISTS idx_books_user
 const indexBooksName = `--sql CREATE INDEX IF NOT EXISTS idx_books_name ON books (name);`;
 const indexBooksGenre = `--sql CREATE INDEX IF NOT EXISTS idx_books_genre ON books (genre);`;
 const trgmIndexBooksName = `--sql CREATE INDEX trgm_idx_books_name ON books USING GIN (name gin_trgm_ops);`;
+const trgmIndexBooksGenre = `--sql CREATE INDEX IF NOT EXISTS trgm_idx_books_genre ON books USING GIN (genre gin_trgm_ops);`;
 
 const createChapterTable = `--sql
   CREATE TABLE IF NOT EXISTS chapters (
@@ -88,6 +89,7 @@ export async function initDB(user, host, database, password, port) {
     await pool.query(indexBooksName);
     await pool.query(indexBooksGenre);
     await pool.query(trgmIndexBooksName);
+    await pool.query(trgmIndexBooksGenre);
 
     await pool.query(createChapterTable);
     await pool.query(updateChaptersTimestampFunction);
