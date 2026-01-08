@@ -230,7 +230,7 @@ class BookRepository {
       }
       return book;
     } else {
-      throw new DatabaseError(`Book ${bookId} not found`);
+      throw new DatabaseError(`Book ${bookId} not found`, null, 404, "BOOK_NOT_FOUND");
     }
   }
 
